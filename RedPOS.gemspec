@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Daan de Jong"]
   spec.email         = ["daanvulkaan@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
+  spec.summary       = %q{Part of speech tagger}
+  spec.description   = %q{A model to assign part of speech tags to a body of text}
   spec.homepage      = "https://github.com/daandj/RedPOS"
   spec.license       = "MIT"
 
@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency 'rspec'
 end
