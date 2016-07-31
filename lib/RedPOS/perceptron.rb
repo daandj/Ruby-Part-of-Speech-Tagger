@@ -21,7 +21,7 @@ module RedPOS
         next if value == 0 or not weigths[feature]
         
         weigths[feature].each do |clas, weigth|
-          product[clas] += weigth * value
+          product[clas] += weigth
         end
       end
       return product
