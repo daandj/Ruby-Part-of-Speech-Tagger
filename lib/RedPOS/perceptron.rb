@@ -1,6 +1,6 @@
 module RedPOS
   class Perceptron
-    attr_accessor :weigths
+    attr_accessor :weigths, :classes
     
     def initialize(classes)
       @classes = classes

@@ -1,5 +1,6 @@
 module RedPOS
   class Tagger
+    attr_accessor :classes, :model
     
     def initialize()
       @classes = nil # TODO: retrieve the correct classes somehow.
@@ -15,7 +16,7 @@ module RedPOS
     end
     
     def train(iterations, sentences, tags)
-      iterations.each do |iter|
+      iterations.times do |iter|
         sentences.each_with_index do |sent, sent_index|
           sent.each_with_index do |word, word_index|
             features = get_features()
@@ -24,8 +25,9 @@ module RedPOS
             true_tag = tags[sent_index][word_index]
             
             if prediction != true_tag
-              update(prediction, true_tag)
+              update(prediction, features, true_tag)
             end
+          end
         end
       end
     end
@@ -36,7 +38,7 @@ module RedPOS
     
     private
     
-    def update(prediction, true_tag)
+    def update(prediction, features, true_tag)
       @model.weigths.each do |feature, classes|
         if features.include?(feature)  
           @model.weigths[feature][prediction] -= 1

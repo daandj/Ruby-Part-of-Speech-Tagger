@@ -31,4 +31,45 @@ describe RedPOS::Perceptron do
     end
     
   end
+  
 end
+
+describe RedPOS::Tagger do
+  classes = [:c1, :c2, :c3]
+  tagger = RedPOS::Tagger.new
+  tagger.model.classes = classes
+  
+  describe "#train" do
+    weigths = {
+      "f1" => { c1: 5, c2: 2, c3: 9 },
+      "f2" => { c1: 1, c2: 2, c3: 6 },
+      "f3" => { c1: 9, c2: 0, c3: 2 }
+    } 
+    tagger.model.weigths = Marshal.load(Marshal.dump(weigths)) # deep copy of
+                                                               # weigths
+    
+    let(:features) { { "f1" => 1, "f2" => 0, "f3" => 1 } }
+    let(:test_sent) { [["this_wont_get_used"]] }
+    
+    it "doesn't change weigths if correct" do
+      test_tags = [[:c1]]
+      allow(tagger).to receive(:get_features).and_return(features)
+      tagger.train(1, test_sent, test_tags)
+      expect(tagger.model.weigths).to eq weigths
+    end
+    
+    it "changes the right weights if wrong" do
+      test_tags = [[:c3]]
+      allow(tagger).to receive(:get_features).and_return(features)
+      expect {
+        tagger.train(1, test_sent, test_tags)
+      }.to change{array_of_weigths(tagger.model.weigths, features, [:c3])}
+        .from(array_of_weigths(weigths, features, [:c3]))
+        .to(array_of_weigths(weigths, features, [:c3]).map { |x| x + 1 })
+        .and change{array_of_weigths(tagger.model.weigths, features, [:c1])}
+        .from(array_of_weigths(weigths, features, [:c1]))
+        .to(array_of_weigths(weigths, features, [:c1]).map { |x| x - 1 })
+    end
+  end
+end
+
