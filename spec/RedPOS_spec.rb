@@ -71,5 +71,28 @@ describe RedPOS::Tagger do
         .to(array_of_weigths(weigths, features, [:c1]).map { |x| x - 1 })
     end
   end
+
+  describe "#get_features" do  
+    let(:context) { [:START, :START2, 'word', 'word2', 'hyphen-word', 'lastword', :END, :END2] }
+    let(:last_tag) { "last_tag" }
+    let(:secondlast_tag) { "secondlast_tag" }
+    let(:features) { tagger.get_features(3, context, last_tag, secondlast_tag) }
+
+    it "gives the value 1 to the 'Wi: word2' feature" do
+      expect(features["Wi: word2"]).to eq 1
+    end
+
+    it "gives the value 1 to the 'Wi-2: START2' feature" do
+      expect(features["Wi-2: START2"]).to eq 1
+    end
+
+    it "gives the value 1 to the 'Ti-1: last_tag' feature" do
+      expect(features["Ti-1: last_tag"]).to eq 1
+    end
+
+    it "gives the value 0 to the 'Contains hyphen' feature" do
+      expect(features["Contains hyphen"]).to eq 0
+    end
+  end
 end
 
