@@ -25,6 +25,9 @@ module RedPOS
 						if prediction != true_tag
 							update(prediction, features, true_tag)
 						end
+
+						secondlast_tag = last_tag
+						last_tag = prediction
 					end
 				end
 			end
