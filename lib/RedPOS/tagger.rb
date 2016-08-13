@@ -8,7 +8,20 @@ module RedPOS
 		end
 	
 		def tag(sentences)
-	
+			tags = Array.new { Array.new }
+
+			sentences.each_with_index do |sent, sent_i|
+				context = [:START, :START2] + sent + [:END, :END2]
+				last_tag, secondlast_tag = :START2, :START
+				sent.each_with_index do |word, word_i|
+					features = get_features(word_i+2, context, last_tag, secondlast_tag)
+
+					prediction = @model.predict(features)
+					tags[sent_i][word_i] = prediction
+					secondlast_tag = last_tag
+					last_tag = prediction
+				end
+			end
 		end
 	
 		def train(iterations, sentences, tags)
