@@ -2,9 +2,13 @@ module RedPOS
 	class Tagger
 		attr_accessor :classes, :model
 	
-		def initialize()
-			@classes = nil # TODO: retrieve the correct classes somehow.
-			@model = Perceptron.new(@classes)
+		def initialize(opts = {})
+			if opts[:new] == true
+			  @classes = opts[:classes]
+			  @model = Perceptron.new(@classes)
+			else
+				# TODO: load an existing model here.
+			end
 		end
 	
 		def tag(sentences)

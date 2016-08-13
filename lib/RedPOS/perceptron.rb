@@ -4,7 +4,7 @@ module RedPOS
     
     def initialize(classes)
       @classes = classes
-      @weigths = {}
+			@weigths = Hash[@classes.map { |clas| [clas, 0] }]
     end
     
     def predict(features)

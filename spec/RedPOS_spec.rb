@@ -36,8 +36,7 @@ end
 
 describe RedPOS::Tagger do
   classes = [:c1, :c2, :c3]
-  tagger = RedPOS::Tagger.new
-  tagger.model.classes = classes
+  tagger = RedPOS::Tagger.new(new: true, classes: classes)
   
   describe "#train" do
     weigths = {
