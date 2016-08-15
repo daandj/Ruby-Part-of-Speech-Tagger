@@ -43,7 +43,7 @@ module RedPOS
 						true_tag = tags[sent_i][word_i]
 	
 						if prediction != true_tag
-							update(prediction, features, true_tag)
+							@model.update(prediction, features, true_tag)
 						end
 
 						secondlast_tag = last_tag
@@ -69,21 +69,6 @@ module RedPOS
 			features["Contains hyphen"] = 1 if sentence[i]["-"]
 			features["Contains number"] = 1 if sentence[i][/\d/]
 			return features
-		end
-	
-		private
-	
-		def update(prediction, features, true_tag)
-			features.each do |feature, value|
-				if @model.weigths.include?(feature)
-					@model.weigths[feature][prediction] -= 1
-					@model.weigths[feature][true_tag] += 1
-				else
-					@model.weigths[feature] = @classes.map { |clas| [clas, 0] }.to_h
-					@model.weigths[feature][prediction] -= 1
-					@model.weigths[feature][true_tag] += 1
-				end
-			end
 		end
 	
 	end
