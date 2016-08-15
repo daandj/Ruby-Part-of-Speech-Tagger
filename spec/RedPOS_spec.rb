@@ -44,6 +44,7 @@ describe RedPOS::Tagger do
       "f2" => { c1: 1, c2: 2, c3: 6 },
       "f3" => { c1: 9, c2: 0, c3: 2 }
     } 
+
     tagger.model.weigths = Marshal.load(Marshal.dump(weigths)) # deep copy of
                                                                # weigths
     
@@ -69,6 +70,14 @@ describe RedPOS::Tagger do
         .from(array_of_weigths(weigths, features, [:c1]))
         .to(array_of_weigths(weigths, features, [:c1]).map { |x| x - 1 })
     end
+
+		it "handles new features correctly" do
+			features = { "f4" => 1 }
+			test_tags = [[:c3]]
+			allow(tagger).to receive(:get_features).and_return(features)
+			expect { tagger.train(1, test_sent, test_tags) }
+				.to change { tagger.model.weigths.length }.from(3).to(4)
+		end
   end
 
   describe "#get_features" do  

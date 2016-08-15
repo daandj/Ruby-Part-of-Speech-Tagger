@@ -26,6 +26,8 @@ module RedPOS
 					last_tag = prediction
 				end
 			end
+			
+			return tags
 		end
 	
 		def train(iterations, sentences, tags)
@@ -71,8 +73,12 @@ module RedPOS
 		private
 	
 		def update(prediction, features, true_tag)
-			@model.weigths.each do |feature, classes|
-				if features.include?(feature)  
+			features.each do |feature, value|
+				if @model.weigths.include?(feature)
+					@model.weigths[feature][prediction] -= 1
+					@model.weigths[feature][true_tag] += 1
+				else
+					@model.weigths[feature] = @classes.map { |clas| [clas, 0] }.to_h
 					@model.weigths[feature][prediction] -= 1
 					@model.weigths[feature][true_tag] += 1
 				end

@@ -4,7 +4,7 @@ module RedPOS
     
     def initialize(classes)
       @classes = classes
-			@weigths = Hash[@classes.map { |clas| [clas, 0] }]
+			@weigths = {}
     end
     
     def predict(features)
@@ -16,9 +16,9 @@ module RedPOS
     private 
     
     def dot_product(weigths, features)
-      product = Hash.new(0)
+			product = Hash[@classes.map { |clas| [clas, 0] }]
       features.each do |feature, value|
-        next if value == 0 or not weigths[feature]
+				next if value == 0 or not weigths.include?(feature)
         
         weigths[feature].each do |clas, weigth|
           product[clas] += weigth
