@@ -3,7 +3,7 @@ module RedPOS
 		attr_accessor :classes, :model
 	
 		def initialize(opts = {})
-			if opts[:new] == true
+			if opts[:new_model] == true
 			  @classes = opts[:classes]
 			  @model = Perceptron.new(@classes)
 			else
@@ -42,15 +42,14 @@ module RedPOS
 						prediction = @model.predict(features)
 						true_tag = tags[sent_i][word_i]
 	
-						if prediction != true_tag
-							@model.update(prediction, features, true_tag)
-						end
+						@model.update(prediction, features, true_tag)
 
 						secondlast_tag = last_tag
 						last_tag = prediction
 					end
 				end
 			end
+			@model.average
 		end
 	
 		def get_features(i, sentence, last_tag, secondlast_tag)
