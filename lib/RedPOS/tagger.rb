@@ -4,13 +4,13 @@ module RedPOS
 	
 		def initialize(opts = {})
 			if opts[:new_model] == true
-			  @classes = opts[:classes]
-			  @model = Perceptron.new(@classes)
+				@classes = opts[:classes]
+				@model = Perceptron.new(@classes)
 			else
-				# TODO: load an existing model here.
+				load_model(opts[:model_name] || 'English_default')
 			end
 		end
-	
+
 		def tag(sentences)
 			tags = Array.new
 
@@ -27,10 +27,10 @@ module RedPOS
 					last_tag = prediction
 				end
 			end
-			
+
 			return tags
 		end
-	
+
 		def train(iterations, sentences, tags)
 			iterations.times do |iter|
 				sentences.each_with_index do |sent, sent_i|
@@ -68,6 +68,19 @@ module RedPOS
 			features["Contains hyphen"] = 1 if sentence[i]["-"]
 			features["Contains number"] = 1 if sentence[i][/\d/]
 			return features
+		end
+
+		def load_model(name, included_model = true)
+			if included_model
+				path = File.expand_path("#{File.dirname(__FILE__)}../../../models/#{name}.model")
+				@model = YAML.load(File.read(path))
+			else
+				@model = YAML.load(File.read(File.expand_path(name)))
+			end
+		end
+
+		def save_model(name)
+			File.open(File.expand_path(name), 'w') { |f| f.write(YAML.dump(@model)) }
 		end
 	
 	end

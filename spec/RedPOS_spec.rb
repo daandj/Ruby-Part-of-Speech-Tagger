@@ -36,7 +36,7 @@ end
 
 describe RedPOS::Tagger do
   classes = [:c1, :c2, :c3]
-  tagger = RedPOS::Tagger.new(new: true, classes: classes)
+  tagger = RedPOS::Tagger.new(new_model: true, classes: classes)
   
   describe "#train" do
     weigths = {
@@ -65,10 +65,10 @@ describe RedPOS::Tagger do
         tagger.train(1, test_sent, test_tags)
       }.to change{array_of_weigths(tagger.model.weigths, features, [:c3])}
         .from(array_of_weigths(weigths, features, [:c3]))
-        .to(array_of_weigths(weigths, features, [:c3]).map { |x| x + 1 })
+				.to(array_of_weigths(weigths, features, [:c3]).map { |x| x + 0.5 })
         .and change{array_of_weigths(tagger.model.weigths, features, [:c1])}
         .from(array_of_weigths(weigths, features, [:c1]))
-        .to(array_of_weigths(weigths, features, [:c1]).map { |x| x - 1 })
+				.to(array_of_weigths(weigths, features, [:c1]).map { |x| x - 0.5 })
     end
 
 		it "handles new features correctly" do
@@ -78,7 +78,7 @@ describe RedPOS::Tagger do
 			expect { tagger.train(1, test_sent, test_tags) }
 				.to change { tagger.model.weigths.length }.from(3).to(4)
 		end
-  end
+	end
 
   describe "#get_features" do  
     let(:context) { [:START, :START2, 'word', 'word2', 'hyphen-word', 'lastword', :END, :END2] }
@@ -102,5 +102,24 @@ describe RedPOS::Tagger do
       expect(features["Contains hyphen"]).to eq 0
     end
   end
+
+	describe "#load/save_model" do
+    weigths = {
+      "f1" => { c1: 5, c2: 2, c3: 9 },
+      "f2" => { c1: 1, c2: 2, c3: 6 },
+      "f3" => { c1: 9, c2: 0, c3: 2 }
+    } 
+
+		it "saves a model without issues" do
+			tagger.model.weigths = Marshal.load(Marshal.dump(weigths)) # deep dup
+			tagger.save_model("../test")
+		end
+
+		it "loads a model correctly" do
+			tagger.load_model("test", false)
+			expect(tagger.model.weigths).to eq weigths
+		end
+
+	end
 end
 
