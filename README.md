@@ -1,6 +1,6 @@
-# RedPOS
+# Ruby Part of Speech Tagger
 
-A soon to be part-of-speech tagger written in Ruby.
+The title says it all.
 
 ## Installation
 
